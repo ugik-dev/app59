@@ -57,6 +57,7 @@
                                             'Pernah Mengulang Mata Kuliah : ' . ($row['retake'] == 'Y' ? 'Pernah' : 'Tidak Pernah') . '<br>'
                                     ?>
                                 </td>
+
                                 <td>
                                     <?php
                                     if (empty($row['id_reg_jadwal'])) {
@@ -96,7 +97,7 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="col-form-label">IPK</div>
-                            <input id="id_jadwal" name="id_jadwal" class="form-control" required />
+                            <input type="hidden" id="id_jadwal" name="id_jadwal" class="form-control" required />
                             <input type="number" step="0.01" min=0 max=4 id="ipk" name="ipk" class="form-control" required />
                         </div>
                         <div class="col-lg-12">

@@ -15,6 +15,7 @@
                         <th>Tanggal Mulai Daftar</th>
                         <th>Tanggal Akhir Daftar</th>
                         <th>Status</th>
+                        <th>Jumlah Peserta</th>
                         <!-- <th>Waktu Daftar</th> -->
                         <th>Aksi</th>
                     </tr>
@@ -43,8 +44,14 @@
                                 <td><?= $row['tanggal_wisuda'] ?></td>
                                 <td><?= $row['w_reg_start'] ?></td>
                                 <td><?= $row['w_reg_end'] ?></td>
-                                <td><?= $row['status'] ?></td>
-
+                                <td><?= $row['status'] == 1 ? 'Belum Generate Posisi' : 'Sudah Generate Posisi' ?></td>
+                                <td>
+                                    <?php
+                                    $resultp = mysqli_query($linkDB, "SELECT count(*) jm FROM reg_jadwal WHERE id_jadwal = {$row['id_jadwal']}");
+                                    $resultrow = mysqli_fetch_assoc($resultp);
+                                    echo $resultrow['jm'];
+                                    ?>
+                                </td>
                                 <td>
                                     <?php
                                     if ($row['status'] >= 2) {
