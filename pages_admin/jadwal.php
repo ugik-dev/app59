@@ -189,7 +189,7 @@
                                 json['message'],
                                 'success'
                             ).then((result) => {
-                                // location.reload();
+                                location.reload();
                             });
                         },
                         error: function(e) {}
