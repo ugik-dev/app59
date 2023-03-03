@@ -12,7 +12,8 @@
                         <th>Tanggal Wisuda</th>
                         <th>Periode Daftar</th>
                         <th>Status</th>
-                        <!-- <th>Waktu Daftar</th> -->
+                        <th>Nomor Kursi</th>
+                        <th>QRCode</th>
                         <th>Keterangan</th>
                         <th>Aksi</th>
                     </tr>
@@ -20,7 +21,7 @@
                 <tbody>
                     <?php
                     $id_user = $_SESSION['id'];
-                    $query = "SELECT j.* , rp.nama_predikat, rj.id_reg_jadwal, rj.ipk, rj.masa_studi, rj.waktu_reg,rj.min_score, rj.retake FROM jadwal as j 
+                    $query = "SELECT j.* , rj.nomor_kursi, qrcode,rp.nama_predikat, rj.id_reg_jadwal, rj.ipk, rj.masa_studi, rj.waktu_reg,rj.min_score, rj.retake FROM jadwal as j 
                     LEFT JOIN reg_jadwal as rj on (j.id_jadwal = rj.id_jadwal AND rj.id_user  = $id_user ) 
                     LEFT JOIN ref_predikat as rp on rj.predikat = rp.id_ref_predikat 
                     -- GROUP BY id_jadwal
@@ -40,7 +41,11 @@
                             <tr>
                                 <td><?= $row['tanggal_wisuda'] ?></td>
                                 <td><?= $row['w_reg_start'] . ' s.d ' . $row['w_reg_start'] ?></td>
-                                <td><?= $row['status'] ?></td>
+                                <td><?= $row['status'] == 1 ? 'Menunggu' : 'Sudah Dijadwalkan' ?></td>
+                                <td><?= !empty($row['nomor_kursi']) ? $row['nomor_kursi'] : '' ?></td>
+                                <td><?= !empty($row['qrcode']) ? "   <a width='100%' href='./qrcode/{$row['id_reg_jadwal']}.png' target='_blank'>
+                     <img width='100%' src='./qrcode/{$row['id_reg_jadwal']}.png'></a>
+             " : '' ?></td>
                                 <td>
                                     <?php
                                     if (!empty($row['id_reg_jadwal']))
