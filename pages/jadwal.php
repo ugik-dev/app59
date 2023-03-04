@@ -37,7 +37,7 @@
                     $result = mysqli_query($linkDB, $query);
                     // $row = mysqli_fetch_array($result);
                     // $row = $result->fetch_array(MYSQLI_NUM);
-
+                    $inttime = strtotime(date('Y-m-d h:i:s'));
                     if ($result->num_rows > 0) {
                         while ($row = $result->fetch_assoc()) {
                             // echo json_encode($row);
@@ -49,11 +49,11 @@
                                 <td><?= $row['status'] == 1 ? 'Menunggu' : 'Sudah Dijadwalkan' ?></td>
                                 <td><?= !empty($row['nomor_kursi']) ? $row['nomor_kursi'] : '' ?></td>
                                 <td><?= !empty($row['nomor_kursi_ortu']) ? $row['nomor_kursi_ortu'] : '' ?></td>
-                                <td><?= !empty($row['qrcode']) ? "   <a width='100%' href='./qrcode/{$row['id_reg_jadwal']}.png' target='_blank'>
-                     <img width='100%' src='./qrcode/{$row['id_reg_jadwal']}.png'></a>
+                                <td><?= !empty($row['qrcode']) ? "   <a width='100%' href='./qrcode/{$row['id_reg_jadwal']}.png?$inttime' target='_blank'>
+                     <img width='100%' src='./qrcode/{$row['id_reg_jadwal']}.png?$inttime'></a>
              " : '' ?></td>
-                                <td><?= !empty($row['qrcode_ortu']) ? "   <a width='100%' href='./qrcode/{$row['id_reg_jadwal']}_ortu.png' target='_blank'>
-                     <img width='100%' src='./qrcode/{$row['id_reg_jadwal']}_ortu.png'></a>
+                                <td><?= !empty($row['qrcode_ortu']) ? "   <a width='100%' href='./qrcode/{$row['id_reg_jadwal']}_ortu.png?$inttime' target='_blank'>
+                     <img width='100%' src='./qrcode/{$row['id_reg_jadwal']}_ortu.png?$inttime'></a>
              " : '' ?></td>
                                 <td>
                                     <?php

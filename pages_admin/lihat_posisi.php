@@ -75,6 +75,8 @@ if ($result2->num_rows > 0) {
                 <tbody>
                     <?php
                     include('./lib/phpqrcode/qrlib.php');
+                    $inttime = strtotime(date('Y-m-d h:i:s'));
+
                     foreach ($dataPeserta as $key => $r) {
                         foreach ($r as $key2 => $p) {
                             $status = $p['status_reg'] == '3' ? 'Sudah Check-In' : 'Belum Check-In';
@@ -86,12 +88,12 @@ if ($result2->num_rows > 0) {
                     <td style=''> {$p['nama_fakultas']}<br>{$p['nama_jurusan']}<br>{$p['strata']} </td>
                     <td style=''> {$p['nama_predikat']} </td>
                     <td>
-                        <a width='100%' href='./qrcode/{$p['id_reg_jadwal']}.png' target='_blank'>
-                     <img width='100%' src='./qrcode/{$p['id_reg_jadwal']}.png'></a>
+                        <a width='100%' href='./qrcode/{$p['id_reg_jadwal']}.png?$inttime' target='_blank'>
+                     <img width='100%' src='./qrcode/{$p['id_reg_jadwal']}.png?$inttime'></a>
                     </td>
                     <td>
-                        <a width='100%' href='./qrcode/{$p['id_reg_jadwal']}_ortu.png' target='_blank'>
-                     <img width='100%' src='./qrcode/{$p['id_reg_jadwal']}_ortu.png'></a>
+                        <a width='100%' href='./qrcode/{$p['id_reg_jadwal']}_ortu.png?$inttime' target='_blank'>
+                     <img width='100%' src='./qrcode/{$p['id_reg_jadwal']}_ortu.png?$inttime'></a>
                     </td>
                     </td>
                 </tr>";
