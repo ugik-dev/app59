@@ -6,6 +6,5 @@ if (empty($_SESSION['level']))
 else if ($_SESSION['level'] == 1)
     header("Location: admin.php?page=dashboard");
 
-$data['title'] = 'Ini Title';
 $page = "pages/{$_GET['page']}.php";
-include('template/header.php');
+include('template/index.php');

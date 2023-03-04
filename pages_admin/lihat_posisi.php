@@ -2,76 +2,57 @@
 $id = $_GET['id'];
 // include('../linkDB.php');
 
-$query2 = "SELECT u.name , rg.*, rp.nama_predikat FROM reg_jadwal rg 
+$query2 = "SELECT u.name , rg.*, rp.nama_predikat ,fj.* FROM reg_jadwal rg 
 JOIN ref_predikat rp on rp.id_ref_predikat = rg.predikat 
+JOIN fakultas_jurusan fj on fj.id_fakultas_jurusan = rg.fakultas_jurusan 
+
 JOIN users u on rg.id_user = u.id 
 WHERE id_jadwal = $id
 ORDER BY nomor_kursi ASC";
 $result2 = mysqli_query($linkDB, $query2);
 
 $dataPeserta = [];
+$dataOrtu = [];
+
 if ($result2->num_rows > 0) {
     while ($row2 = $result2->fetch_assoc()) {
-        // $dataPeserta[] = $row2;
         $kursi = explode('-', $row2['nomor_kursi']);
         $dataPeserta[$kursi[0]][$kursi[1]] = $row2;
+        if (!in_array($row2['predikat'], [1, 2])) {
+            $kursi_ortu = explode(',', $row2['nomor_kursi_ortu']);
+            $kursi1 = explode('-', $kursi_ortu[0]);
+            $kursi2 = explode('-', $kursi_ortu[1]);
+            $dataOrtu[$kursi1[0]][$kursi1[1]] = ['status_ortu' => $row2['status_ortu'], 'nomor_kursi' => $kursi_ortu[0]];
+            $dataOrtu[$kursi2[0]][$kursi2[1]] = ['status_ortu' => $row2['status_ortu'], 'nomor_kursi' => $kursi_ortu[1]];
+        } else {
+        }
+
+        // $dataPeserta[] = $row2;
+        // $kursi = explode('-', $row2['nomor_kursi']);
+        // $dataPeserta[$kursi[0]][$kursi[1]] = $row2;
+
+        // if (in_array($row2['predikat'], [1, 2])) {
+        //     $kursi_ortu = explode(',', $row2['nomor_kursi_ortu']);
+        //     $kursi2 = explode('-', $kursi_ortu[0]);
+        //     $dataPeserta[$kursi[0]][$kursi[1]] = $kursi_ortu[0];
+        //     $kursi3 = explode('-', $kursi_ortu[1]);
+        //     $dataPeserta[$kursi[0]][$kursi[1]] = $kursi_ortu[1];
+        // }
     }
 }
 
 // echo json_encode($dataPeserta);
 
 ?>
-<style>
-    div .chair {
-        width: 50px !important;
-        border: 1px solid green;
-        padding: 0px;
-        margin: 0px;
-        text-align: center;
-    }
-</style>
+
 
 <div class="box-container">
-    <table border=1 width=100%>
-        <tr>
-            <td style="text-align: center; background-color: green;  color: white;">Podium</td>
-        </tr>
-    </table>
-    <br>
-    <table border=1 width=100% style="align-items: center; text-align: center">
-        <style>
-            div .chair {
-                width: 30px;
-                border: 1px solid green;
-                padding: 0px;
-                margin: 0px;
-                text-align: center;
-            }
-        </style>
-        <?php
-        foreach ($dataPeserta as $key => $r) {
-        ?>
-            <tr>
-                <td style="align-items: center; text-align: center">
-                    <div class="row" style="margin:0px ;align-items: center; text-align: center">
-                        <?php
-                        foreach ($r as $key2 => $p) {
-                            echo "<div class='chair' data-id='" . $p['nomor_kursi'] . "'>" . $p['nomor_kursi'] . "</div>";
-                        }
-                        ?>
-                    </div>
+    <?php include('posisi.php') ?>
 
-                </td>
-
-            </tr>
-        <?php
-        }
-        ?>
-    </table>
 </div>
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+        <h6 class="m-0 font-weight-bold text-primary">Data Peserta</h6>
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -79,11 +60,14 @@ if ($result2->num_rows > 0) {
                 <thead>
                     <tr>
                         <th>No Kursi</th>
+                        <th>No Kursi Orang Tua</th>
                         <th>Nama</th>
+                        <th>Fakultas Jurusan</th>
                         <th>Predikat</th>
-                        <th>IPK</th>
-                        <th>Status</th>
-                        <th>QRCODE</th>
+                        <!-- <th>IPK</th> -->
+                        <!-- <th>Status</th> -->
+                        <th>QRCode Mhs</th>
+                        <th>QRCode Ortu</th>
                         <!-- <th>Waktu Daftar</th> -->
                         <!-- <th>Aksi</th> -->
                     </tr>
@@ -97,13 +81,17 @@ if ($result2->num_rows > 0) {
                             echo "
                 <tr>
                     <td style='text-align: center'> {$p['nomor_kursi']} </td>
-                    <td style='text-align: center'> {$p['name']} </td>
-                    <td style='text-align: center'> {$p['nama_predikat']} </td>
-                    <td style='text-align: center'> {$p['ipk']} </td>
-                    <td style='text-align: center'> {$status} </td>
+                    <td style='text-align: center'> {$p['nomor_kursi_ortu']} </td>
+                    <td style=''> {$p['name']} </td>
+                    <td style=''> {$p['nama_fakultas']}<br>{$p['nama_jurusan']}<br>{$p['strata']} </td>
+                    <td style=''> {$p['nama_predikat']} </td>
                     <td>
                         <a width='100%' href='./qrcode/{$p['id_reg_jadwal']}.png' target='_blank'>
                      <img width='100%' src='./qrcode/{$p['id_reg_jadwal']}.png'></a>
+                    </td>
+                    <td>
+                        <a width='100%' href='./qrcode/{$p['id_reg_jadwal']}_ortu.png' target='_blank'>
+                     <img width='100%' src='./qrcode/{$p['id_reg_jadwal']}_ortu.png'></a>
                     </td>
                     </td>
                 </tr>";

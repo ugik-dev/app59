@@ -5,6 +5,14 @@ if (empty($_SESSION['level']))
 else if ($_SESSION['level'] != 1)
     header("Location: index.php?page=dashboard");
 
-$data['title'] = 'Ini Title';
-$page = "pages_admin/{$_GET['page']}.php";
-include('template/header.php');
+if ($_GET['page'] == 'scanner') {
+    include('template/header.php');
+    include('pages_admin/scanner.php');
+
+    $page = "pages_admin/{$_GET['page']}.php";
+    include('template/footer.php');
+} else {
+    $data['title'] = 'Ini Title';
+    $page = "pages_admin/{$_GET['page']}.php";
+    include('template/index.php');
+}

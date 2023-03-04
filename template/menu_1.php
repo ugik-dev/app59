@@ -9,6 +9,12 @@
         <i class="fas fa-fw fa-chair"></i>
         <span>Pengaturan Kursi</span></a>
 </li>
+
+<li class="nav-item">
+    <a class="nav-link" href="?page=pengaturan_fakultas_jurusan">
+        <i class="fas fa-fw fa-chair"></i>
+        <span>Pengaturan Fakultas / Jurusan</span></a>
+</li>
 <li class="nav-item">
     <a class="nav-link" href="?page=jadwal">
         <i class="fas fa-fw fa-calendar"></i>

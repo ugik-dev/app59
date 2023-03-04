@@ -1,6 +1,6 @@
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+        <h6 class="m-0 font-weight-bold text-primary">Data Jadwal Wisuda</h6>
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -12,18 +12,23 @@
                         <th>Tanggal Wisuda</th>
                         <th>Periode Daftar</th>
                         <th>Status</th>
-                        <th>Nomor Kursi</th>
-                        <th>QRCode</th>
+                        <th>Nomor Kursi Mhs</th>
+                        <th>Nomor Kursi Ortu</th>
+                        <th>QRCode Mhs</th>
+                        <th>QRCode Ortu</th>
                         <th>Keterangan</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
+
                     <?php
+                    $cur_date = date('Y-m-d');
                     $id_user = $_SESSION['id'];
-                    $query = "SELECT j.* , rj.nomor_kursi, qrcode,rp.nama_predikat, rj.id_reg_jadwal, rj.ipk, rj.masa_studi, rj.waktu_reg,rj.min_score, rj.retake FROM jadwal as j 
+                    $query = "SELECT j.* , rj.nomor_kursi_ortu, rj.qrcode_ortu, rj.nomor_kursi, qrcode,rp.nama_predikat, rj.id_reg_jadwal, rj.ipk, rj.masa_studi, rj.waktu_reg,rj.min_score, rj.retake FROM jadwal as j 
                     LEFT JOIN reg_jadwal as rj on (j.id_jadwal = rj.id_jadwal AND rj.id_user  = $id_user ) 
                     LEFT JOIN ref_predikat as rp on rj.predikat = rp.id_ref_predikat 
+                    WHERE ( '$cur_date' BETWEEN w_reg_start AND w_reg_end ) OR  rj.id_user = $id_user
                     -- GROUP BY id_jadwal
                     ";
 
@@ -43,8 +48,12 @@
                                 <td><?= $row['w_reg_start'] . ' s.d ' . $row['w_reg_start'] ?></td>
                                 <td><?= $row['status'] == 1 ? 'Menunggu' : 'Sudah Dijadwalkan' ?></td>
                                 <td><?= !empty($row['nomor_kursi']) ? $row['nomor_kursi'] : '' ?></td>
+                                <td><?= !empty($row['nomor_kursi_ortu']) ? $row['nomor_kursi_ortu'] : '' ?></td>
                                 <td><?= !empty($row['qrcode']) ? "   <a width='100%' href='./qrcode/{$row['id_reg_jadwal']}.png' target='_blank'>
                      <img width='100%' src='./qrcode/{$row['id_reg_jadwal']}.png'></a>
+             " : '' ?></td>
+                                <td><?= !empty($row['qrcode_ortu']) ? "   <a width='100%' href='./qrcode/{$row['id_reg_jadwal']}_ortu.png' target='_blank'>
+                     <img width='100%' src='./qrcode/{$row['id_reg_jadwal']}_ortu.png'></a>
              " : '' ?></td>
                                 <td>
                                     <?php
@@ -112,6 +121,27 @@
                                 <option value="C">C</option>
                                 <option value="B">B</option>
                                 <option value="A">A</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="col-form-label">Fakultas / Jurusan / Strata</div>
+                            <select name="fakultas_jurusan" id="fakultas_jurusan" class="form-control" required>
+                                <option value="">-</option>
+                                <?php
+                                $query_select = "SELECT * from fakultas_jurusan ORDER by no_urut";
+
+                                // echo $query;
+                                // die();
+                                $result_select = mysqli_query($linkDB, $query_select);
+                                // $row = mysqli_fetch_array($result);
+                                // $row = $result->fetch_array(MYSQLI_NUM);
+
+                                if ($result_select->num_rows > 0) {
+                                    while ($row_select = $result_select->fetch_assoc()) {
+                                        echo "<option value='{$row_select['id_fakultas_jurusan']}'>{$row_select['nama_fakultas']} - {$row_select['nama_jurusan']} - {$row_select['strata']}<option>";
+                                    }
+                                }
+                                ?>
                             </select>
                         </div>
                         <div class="col-lg-12">

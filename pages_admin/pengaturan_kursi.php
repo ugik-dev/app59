@@ -16,11 +16,9 @@
     </table>
     <br>
     <table border=1 width=100%>
-
-
         <?php
         $id_user = $_SESSION['id'];
-        $query = "SELECT * FROM ref_baris as j ORDER BY nama_baris asc
+        $query = "SELECT * FROM ref_baris as j where jenis = 1 ORDER BY nama_baris asc
                        ";
         $result = mysqli_query($linkDB, $query);
 
@@ -43,8 +41,8 @@
                         <?php
                         if (!empty($row['id_baris'])) {
                             echo '
-                            <a title="Edit" class="edit btn btn-primary" data-id="' . $row['id_baris'] . '" data-nama="' . $row['nama_baris'] . '" data-jml="' . $row['jml_kursi'] . '"> <i class="fa fa-book fa-xs" ></i> </a>
-                            <a title="Hapus" class="delete btn btn-danger" data-id="' . $row['id_baris'] . '"> <i class="fa fa-trash fa-xs"></i> </a>';
+                            <a title="Edit" class="edit btn btn-primary" data-jenis="1" data-id="' . $row['id_baris'] . '" data-nama="' . $row['nama_baris'] . '" data-jml="' . $row['jml_kursi'] . '"> <i class="fa fa-book fa-xs" ></i> </a>
+                            <a title="Hapus" class="delete btn btn-danger" data-jenis="1" data-id="' . $row['id_baris'] . '"> <i class="fa fa-trash fa-xs"></i> </a>';
                         }
                         ?>
                     </td>
@@ -53,9 +51,55 @@
             }
         }
         ?>
-
     </table>
+
     <button class="add_baris btn btn-success"><i class="fa fa-plus"></i> Baris</button>
+
+    <br>
+    <table border=1 width=100%>
+        <tr>
+            <td style="text-align: center; background-color: blue;  color: white;">Pembatas Kursi Mahasiswa dan Orang Tua </td>
+        </tr>
+    </table>
+    <br>
+    <table border=1 width=100%>
+        <?php
+        $id_user = $_SESSION['id'];
+        $query = "SELECT * FROM ref_baris as j where jenis = 2 ORDER BY nama_baris asc
+                       ";
+        $result = mysqli_query($linkDB, $query);
+
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+        ?>
+                <tr>
+                    <td><?= $row['nama_baris'] ?></td>
+                    <td>
+                        <div class="row" style="margin:0px">
+                            <?php
+                            for ($i = 1; $i <= $row['jml_kursi']; $i++) {
+                                echo "<div class='chair'>$i</div>";
+                            }
+                            ?>
+                        </div>
+
+                    </td>
+                    <td style="text-align: center;">
+                        <?php
+                        if (!empty($row['id_baris'])) {
+                            echo '
+                            <a title="Edit" class="edit btn btn-primary" data-jenis="2" data-id="' . $row['id_baris'] . '" data-nama="' . $row['nama_baris'] . '" data-jml="' . $row['jml_kursi'] . '"> <i class="fa fa-book fa-xs" ></i> </a>
+                            <a title="Hapus" class="delete btn btn-danger" data-jenis="2" data-id="' . $row['id_baris'] . '"> <i class="fa fa-trash fa-xs"></i> </a>';
+                        }
+                        ?>
+                    </td>
+                </tr>
+        <?php
+            }
+        }
+        ?>
+    </table>
+    <button class="add_baris_ortu btn btn-success"><i class="fa fa-plus"></i> Baris</button>
 </div>
 
 <div class="modal fade" id="reg_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -73,6 +117,7 @@
                         <div class="col-lg-12">
                             <div class="col-form-label">Nama Baris</div>
                             <input type="hidden" id="id_baris" name="id_baris" class="form-control" />
+                            <input type="" id="jenis" name="jenis" class="form-control" />
                             <input type="text" placeholder="contoh : G" onkeydown="return /[A-Z]/i.test(event.key)" id="nama_baris" name="nama_baris" class="form-control" required />
                         </div>
                         <div class="col-lg-12">
@@ -102,24 +147,34 @@
             'id_baris': $('#reg_modal').find('#id_baris'),
             'nama_baris': $('#reg_modal').find('#nama_baris'),
             'jml_kursi': $('#reg_modal').find('#jml_kursi'),
+            'jenis': $('#reg_modal').find('#jenis'),
         }
-        $('.add_baris').on('click', function(ev) {
-            // cur_id = $(this).data('id')
 
+        $('.add_baris').on('click', function(ev) {
             RefModal.self.modal('show');
             RefModal.form.trigger('reset');
-            // RefModal.id_baris.val(cur_id);
+            RefModal.jenis.val(1);
         })
+
+        $('.add_baris_ortu').on('click', function(ev) {
+            RefModal.self.modal('show');
+            RefModal.form.trigger('reset');
+            RefModal.jenis.val(2);
+
+        })
+
 
         $('.edit').on('click', function(ev) {
             cur_id = $(this).data('id')
             nama = $(this).data('nama')
             jml = $(this).data('jml')
+            jenis = $(this).data('jenis')
             RefModal.self.modal('show');
             RefModal.form.trigger('reset');
             RefModal.id_baris.val(cur_id);
             RefModal.nama_baris.val(nama);
             RefModal.jml_kursi.val(jml);
+            RefModal.jenis.val(jenis);
         })
 
 
