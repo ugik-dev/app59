@@ -122,7 +122,7 @@ $result2 = mysqli_query($linkDB, $query2);
 $j = 0;
 if ($result2->num_rows > 0) {
     while ($row2 = $result2->fetch_assoc()) {
-        $j = cek_next($j, $j + 2, $dataKursiOrtu);
+        $j = cek_next($j, $j + 1, $dataKursiOrtu);
 
         if (empty($dataKursiOrtu[$j]) or empty($dataKursiOrtu[$j + 1]) or empty($dataKursi[$i])) {
             echo json_encode(['error' => true, 'message' => "Jumlah Kursi Kurang!!"]);
@@ -143,7 +143,7 @@ if ($result2->num_rows > 0) {
         QRcode::png($codeContents2, $pngAbsoluteFilePath2);
 
 
-        $sql_update = "UPDATE reg_jadwal SET  status_reg = '2', 
+        $sql_update = "UPDATE reg_jadwal SET  status_reg = '2', status_ortu = '2',
         nomor_kursi = '{$dataKursi[$i]}', qrcode= '{$codeContents}' ,
         nomor_kursi_ortu = '{$dataKursiOrtu[$j]},{$dataKursiOrtu[$j + 1]}', qrcode_ortu= '{$codeContents2}' 
 
