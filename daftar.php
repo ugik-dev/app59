@@ -1,19 +1,20 @@
 <!-- PHP command to link server.php file with registration form  -->
 <?php include('server.php'); ?>
- 
- <!DOCTYPE html>
- <html lang="en">
- <head>
-     <meta charset="UTF-8">
-     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <title>Registration</title>
-     <!-- <link rel="preconnect" href="https://fonts.gstatic.com">
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registration</title>
+  <!-- <link rel="preconnect" href="https://fonts.gstatic.com">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet"> -->
- 
-     <!-- CSS Code -->
-     <!-- <style>
+
+  <!-- CSS Code -->
+  <!-- <style>
          .container{
              justify-content: center;
              text-align: center;
@@ -29,7 +30,7 @@
              margin: 0 auto;
          }
      </style> -->
-     <style media="screen">
+  <style media="screen">
     *,
     *:before,
     *:after {
@@ -37,21 +38,24 @@
       margin: 0;
       box-sizing: border-box;
     }
-    .container{
-             justify-content: center;
-             text-align: center;
-             color: #e5e5e5;
-             align-items: center;
-         }
-         input{
-             padding: 5px;
-         }
-         .error{
-             background-color: pink;
-             color: red;
-             width: 300px;
-             margin: 0 auto;
-         }
+
+    .container {
+      justify-content: center;
+      text-align: center;
+      color: #e5e5e5;
+      align-items: center;
+    }
+
+    input {
+      padding: 5px;
+    }
+
+    .error {
+      background-color: pink;
+      color: red;
+      width: 300px;
+      margin: 0 auto;
+    }
 
     body {
       background-color: royalblue;
@@ -152,39 +156,39 @@
       border-radius: 5px;
       cursor: pointer;
     }
-
   </style>
- </head>
- 
- <body>
- <div class="container">
-     <h1>Graduation Registration System</h1>
-     <h4><a href="#" style="text-decoration:none ; color: whitesmoke">Home Page</a></h4>
-     
-      
-     <div class="form" id="signUp">
-     <form method="POST">
+</head>
+
+<body>
+  <div class="container">
+    <h1>Graduation Registration System</h1>
+    <!-- <h4><a href="#" style="text-decoration:none ; color: whitesmoke">Home Page</a></h4> -->
+
+
+    <div class="form" id="signUp">
+      <form method="POST">
         <div class="error"> <?php echo $error ?> </div>
- 
-            <!--------- To check user registration status ------->
-     <p>
-         <?php
-            if (!isset($_COOKIE["id"]) OR !isset($_SESSION["id"]) ) {
-             echo "Please first register to proceed.";
-            }
-         ?>
+
+        <!--------- To check user registration status ------->
+        <p>
+          <?php
+          if (!isset($_COOKIE["id"]) or !isset($_SESSION["id"])) {
+            echo "Please first register to proceed.";
+          }
+          ?>
         </p>
-       <input type="text" name="name" placeholder="Student ID"> <br> <br>
-       <input type="email" name="email" placeholder="Email"> <br><br>
-       <input type="password" name="password" placeholder="Password"><br><br>
-       <input type="password" name="repeatPassword" placeholder="Repeat Password"><br><br>
-       <!-- <label for="checkbox">Stay logged in</label>
+        <input type="text" name="name" placeholder="Nama Mahasiswa"> <br> <br>
+        <input type="email" name="email" placeholder="Email"> <br><br>
+        <input type="password" name="password" placeholder="Password"><br><br>
+        <input type="password" name="repeatPassword" placeholder="Repeat Password"><br><br>
+        <!-- <label for="checkbox">Stay logged in</label>
        <input type="checkbox" name="stayLoggedIn" id="chechbox" value="1"> <br><br> -->
-       <button type="submit" name="signUp" value="Sign Up"> Sign up </button>
-       <br></br>
-       <p >Have an account already? <a href="login.php">Log In</a></p>
+        <button type="submit" name="signUp" value="Sign Up"> Sign up </button>
+        <br></br>
+        <p>Have an account already? <a href="login.php">Log In</a></p>
       </form>
-     </div>
-  
- </body>
- </html>
+    </div>
+
+</body>
+
+</html>

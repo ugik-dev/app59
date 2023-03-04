@@ -89,7 +89,7 @@
     }
 
     form {
-      height: 520px;
+      height: 420px;
       width: 400px;
       background-color: rgba(255, 255, 255, 0.13);
       position: absolute;
@@ -172,7 +172,7 @@
   <div class="container">
     <h1> Graduation Registration System</h1>
 
-    <h4><a href="index.php" style="text-decoration:none ; color: whitesmoke">Home Page</a></h4>
+    <!-- <h4><a href="index.php" style="text-decoration:none ; color: whitesmoke">Home Page</a></h4> -->
     <!--------log in form------>
 
     <div class="logInForm" id="logIn">
@@ -190,10 +190,24 @@
           ?>
         </p>
 
-        <input type="email" name="email" placeholder="Email"> <br><br>
-        <input type="password" name="password" placeholder="password"><br><br>
-        <label for="checkbox">Stay logged in</label>
-        <input type="checkbox" name="stayLoggedIn" id="chechbox" value="1"> <br><br>
+        <input type="email" name="email" placeholder="Email"> <br>
+        <input type="password" name="password" placeholder="password">
+
+        <style>
+          .inline-label {
+            white-space: nowrap;
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            float: left;
+          }
+        </style>
+        <div style="
+   height: 30px;
+  position: relative;">
+          <input class="inline-label" type="checkbox" style="width: 30px !important; margin-right: 30px " name="stayLoggedIn" id="chechbox" value="1" />
+          <label for="id1" class="inline-label" style="margin-top: 17px"> Stay logged in </label>
+        </div>
         <button type="submit" name="logIn" value="Log In"> Login</button>
 
         <!-- User registration form link -->
