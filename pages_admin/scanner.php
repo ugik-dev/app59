@@ -16,14 +16,14 @@ if ($result2->num_rows > 0) {
     while ($row2 = $result2->fetch_assoc()) {
         $kursi = explode('-', $row2['nomor_kursi']);
         $dataPeserta[$kursi[0]][$kursi[1]] = $row2;
-        if (!in_array($row2['predikat'], [1, 2])) {
-            $kursi_ortu = explode(',', $row2['nomor_kursi_ortu']);
-            $kursi1 = explode('-', $kursi_ortu[0]);
-            $kursi2 = explode('-', $kursi_ortu[1]);
-            $dataOrtu[$kursi1[0]][$kursi1[1]] = ['status_ortu' => $row2['status_ortu'], 'nomor_kursi' => $kursi_ortu[0]];
-            $dataOrtu[$kursi2[0]][$kursi2[1]] = ['status_ortu' => $row2['status_ortu'], 'nomor_kursi' => $kursi_ortu[1]];
-        } else {
-        }
+        // if (!in_array($row2['predikat'], [1, 2])) {
+        $kursi_ortu = explode(',', $row2['nomor_kursi_ortu']);
+        $kursi1 = explode('-', $kursi_ortu[0]);
+        $kursi2 = explode('-', $kursi_ortu[1]);
+        $dataOrtu[$kursi1[0]][$kursi1[1]] = ['status_ortu' => $row2['status_ortu'], 'nomor_kursi' => $kursi_ortu[0]];
+        $dataOrtu[$kursi2[0]][$kursi2[1]] = ['status_ortu' => $row2['status_ortu'], 'nomor_kursi' => $kursi_ortu[1]];
+        // } else {
+        // }
     }
 }
 ?>

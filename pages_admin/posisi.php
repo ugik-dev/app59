@@ -1,5 +1,4 @@
 <div class="no-style" id="no-style">
-
     <style>
         .no-style {
             all: unset;
@@ -53,13 +52,13 @@
                     <div class="row" style="margin:0px ;align-items: center; text-align: center">
                         <?php
                         foreach ($r as $key2 => $p) {
-                            if (in_array($p['predikat'], [1, 2])) {
-                                $kursi_ortu = explode(',', $p['nomor_kursi_ortu']);
-                                echo "<div class='chair border_blue " . ($p['status_ortu'] == '3' ? 'check_in' : 'not_check_in') . "' data-id='" . $kursi_ortu[0] . "'>" . $kursi_ortu[0] . "</div>";
-                                echo "<div class='chair border_green " . ($p['status_reg'] == '3' ? 'check_in' : 'not_check_in') . "' data-id='" . $p['nomor_kursi'] . "'>" . $p['nomor_kursi'] . "</div>";
-                                echo "<div class='chair border_blue " . ($p['status_ortu'] == '3' ? 'check_in' : 'not_check_in') . "' data-id='" . $kursi_ortu[1] . "'>" . $kursi_ortu[1] . "</div>";
-                            } else
-                                echo "<div class='chair border_green " . ($p['status_reg'] == '3' ? 'check_in' : 'not_check_in') . "' data-id='" . $p['nomor_kursi'] . "'>" . $p['nomor_kursi'] . "</div>";
+                            // if (in_array($p['predikat'], [1, 2])) {
+                            //     $kursi_ortu = explode(',', $p['nomor_kursi_ortu']);
+                            //     echo "<div class='chair border_blue " . ($p['status_ortu'] == '3' ? 'check_in' : 'not_check_in') . "' data-id='" . $kursi_ortu[0] . "'>" . $kursi_ortu[0] . "</div>";
+                            //     echo "<div class='chair border_green " . ($p['status_reg'] == '3' ? 'check_in' : 'not_check_in') . "' data-id='" . $p['nomor_kursi'] . "'>" . $p['nomor_kursi'] . "</div>";
+                            //     echo "<div class='chair border_blue " . ($p['status_ortu'] == '3' ? 'check_in' : 'not_check_in') . "' data-id='" . $kursi_ortu[1] . "'>" . $kursi_ortu[1] . "</div>";
+                            // } else
+                            echo "<div class='chair border_green " . ($p['status_reg'] == '3' ? 'check_in' : 'not_check_in') . "' data-id='" . $p['nomor_kursi'] . "'>" . $p['nomor_kursi'] . "</div>";
                         }
                         ?>
                     </div>

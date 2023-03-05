@@ -45,7 +45,7 @@
                     ?>
                             <tr>
                                 <td><?= $row['tanggal_wisuda'] ?></td>
-                                <td><?= $row['w_reg_start'] . ' s.d ' . $row['w_reg_start'] ?></td>
+                                <td><?= $row['w_reg_start'] . ' s.d ' . $row['w_reg_end'] ?></td>
                                 <td><?= $row['status'] == 1 ? 'Menunggu' : 'Sudah Dijadwalkan' ?></td>
                                 <td><?= !empty($row['nomor_kursi']) ? $row['nomor_kursi'] : '' ?></td>
                                 <td><?= !empty($row['nomor_kursi_ortu']) ? $row['nomor_kursi_ortu'] : '' ?></td>
