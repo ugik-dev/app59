@@ -1,9 +1,10 @@
 <?php
 $id = $_GET['jadwal'];
-$query2 = "SELECT u.name , rg.*, fj.*,rp.nama_predikat FROM reg_jadwal rg 
+$query2 = "SELECT u.name , rg.*, fj.*,rp.nama_predikat,f.* FROM reg_jadwal rg 
 JOIN ref_predikat rp on rp.id_ref_predikat = rg.predikat 
 JOIN users u on rg.id_user = u.id 
 JOIN fakultas_jurusan fj on fj.id_fakultas_jurusan = rg.fakultas_jurusan 
+JOIN fakultas f on f.id_fakultas = fj.fakultas 
 
 WHERE id_jadwal = $id
 ORDER BY nomor_kursi ASC";
@@ -58,7 +59,6 @@ if ($result2->num_rows > 0) {
                         <th>Predikat</th>
                         <th>Status</th>
                         <th>Status Ortu</th>
-
                     </tr>
                 </thead>
                 <tbody>
@@ -117,10 +117,15 @@ if ($result2->num_rows > 0) {
 
 <script>
     $(document).ready(function() {
-        $('#dataPeserta').DataTable();
+        var table = $('#dataTable').DataTable();
         var resultContainer = document.getElementById('qr-reader-results');
         var valueContainer = $('#qr-reader-value');
         var lastResult, countResults = 0;
+        $('.chair').on('click', function(ev) {
+            cur_id = $(this).data('id')
+            console.log(cur_id);
+            table.search(cur_id).draw();
+        })
 
         // valueContainer.html
 

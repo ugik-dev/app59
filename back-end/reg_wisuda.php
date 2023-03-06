@@ -7,7 +7,6 @@ $data = $_POST;
 $id_user = $_SESSION['id'];
 // echo json_encode($data);
 
-
 $cek = "SELECT * FROM jadwal WHERE id_jadwal = {$data['id_jadwal']}";
 // echo $cek;
 $resultcek = mysqli_query($linkDB, $cek);
@@ -53,7 +52,7 @@ if ($result->num_rows > 0) {
 
 
 $wktu = date('Y-m-d H:i:s');
-$sql = "INSERT INTO reg_jadwal (id_jadwal, id_user, waktu_reg, ipk, masa_studi, retake, min_score , predikat)
-VALUES ('{$data['id_jadwal']}', '$id_user', '$wktu', '{$data['ipk']}', '{$data['masa_studi']}', '{$data['retake']}', '{$data['min_score']}', '{$data['predikat']}')";
+$sql = "INSERT INTO reg_jadwal (id_jadwal, id_user, waktu_reg, ipk, masa_studi, retake, min_score , predikat, fakultas_jurusan)
+VALUES ('{$data['id_jadwal']}', '$id_user', '$wktu', '{$data['ipk']}', '{$data['masa_studi']}', '{$data['retake']}', '{$data['min_score']}', '{$data['predikat']}', '{$data['fakultas_jurusan']}')";
 
 include('response.php');

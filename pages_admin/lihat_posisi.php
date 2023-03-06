@@ -2,13 +2,18 @@
 $id = $_GET['id'];
 // include('../linkDB.php');
 
-$query2 = "SELECT u.name , rg.*, rp.nama_predikat ,fj.* FROM reg_jadwal rg 
+$query2 = "SELECT u.name , rg.*, rp.nama_predikat ,fj.*, f.* 
+FROM reg_jadwal rg 
 JOIN ref_predikat rp on rp.id_ref_predikat = rg.predikat 
 JOIN fakultas_jurusan fj on fj.id_fakultas_jurusan = rg.fakultas_jurusan 
+JOIN fakultas f on f.id_fakultas = fj.fakultas 
 
 JOIN users u on rg.id_user = u.id 
 WHERE id_jadwal = $id
-ORDER BY nomor_kursi ASC";
+
+ORDER BY 
+length(nomor_kursi), 
+nomor_kursi ASC";
 $result2 = mysqli_query($linkDB, $query2);
 
 $dataPeserta = [];
@@ -64,8 +69,6 @@ if ($result2->num_rows > 0) {
                         <th>Nama</th>
                         <th>Fakultas Jurusan</th>
                         <th>Predikat</th>
-                        <!-- <th>IPK</th> -->
-                        <!-- <th>Status</th> -->
                         <th>QRCode Mhs</th>
                         <th>QRCode Ortu</th>
                         <!-- <th>Waktu Daftar</th> -->
@@ -142,7 +145,9 @@ if ($result2->num_rows > 0) {
 <script>
     $(document).ready(function() {
         // var TablePeserta = $('#dataPeserta').DataTable();
-        var table = $('#dataPeserta').DataTable();
+        var table = $('#dataTable').DataTable({
+            ordering: false
+        });
         // var SearchFilter = $('#dataTable_filter').find('input');
         // SearchFilter.val('12');
         $('#dataTable_filter').find("input").attr('id');
@@ -162,8 +167,7 @@ if ($result2->num_rows > 0) {
         $('.chair').on('click', function(ev) {
             cur_id = $(this).data('id')
             console.log(cur_id);
-            table.search('fas');
-            // SearchFilter.val('12');
+            table.search(cur_id).draw();
         })
 
         $('.edit').on('click', function(ev) {

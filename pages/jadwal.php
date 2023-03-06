@@ -128,7 +128,10 @@
                             <select name="fakultas_jurusan" id="fakultas_jurusan" class="form-control" required>
                                 <option value="">-</option>
                                 <?php
-                                $query_select = "SELECT * from fakultas_jurusan ORDER by no_urut";
+                                $query_select = "SELECT * 
+                                from fakultas_jurusan fj 
+                                join fakultas f on f.id_fakultas = fj.fakultas
+                                ORDER by fj.fakultas, no_urut";
 
                                 // echo $query;
                                 // die();

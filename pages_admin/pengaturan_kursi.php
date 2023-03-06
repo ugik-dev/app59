@@ -15,44 +15,53 @@
         </tr>
     </table>
     <br>
-    <table border=1 width=100%>
-        <?php
-        $id_user = $_SESSION['id'];
-        $query = "SELECT * FROM ref_baris as j where jenis = 1 ORDER BY nama_baris asc
-                       ";
-        $result = mysqli_query($linkDB, $query);
-
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-        ?>
+    <div class="table-responsive">
+        <table class="table table-bordered" width=100% id="tb_kursi_mhs" cellspacing="0">
+            <thead>
                 <tr>
-                    <td><?= $row['nama_baris'] ?></td>
-                    <td>
-                        <div class="row" style="margin:0px">
-                            <?php
-                            for ($i = 1; $i <= $row['jml_kursi']; $i++) {
-                                echo "<div class='chair'>$i</div>";
-                            }
-                            ?>
-                        </div>
-
-                    </td>
-                    <td style="text-align: center;">
-                        <?php
-                        if (!empty($row['id_baris'])) {
-                            echo '
-                            <a title="Edit" class="edit btn btn-primary" data-jenis="1" data-id="' . $row['id_baris'] . '" data-nama="' . $row['nama_baris'] . '" data-jml="' . $row['jml_kursi'] . '"> <i class="fa fa-book fa-xs" ></i> </a>
-                            <a title="Hapus" class="delete btn btn-danger" data-jenis="1" data-id="' . $row['id_baris'] . '"> <i class="fa fa-trash fa-xs"></i> </a>';
-                        }
-                        ?>
-                    </td>
+                    <th>No Kursi</th>
+                    <th>Jumlah Kursi</th>
+                    <th>Predikat Khusus</th>
+                    <th>Fakultas Jurusan</th>
+                    <th width=100px>Aksi</th>
                 </tr>
-        <?php
-            }
-        }
-        ?>
-    </table>
+            </thead>
+            <tbody>
+                <?php
 
+                $id_user = $_SESSION['id'];
+                $query = "SELECT * FROM ref_baris as j 
+                     LEFT JOIN fakultas f on j.fakultas = f.id_fakultas
+                 where jenis = 1 ORDER BY 
+                    length(nama_baris) asc,
+                 nama_baris asc";
+                $result = mysqli_query($linkDB, $query);
+
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                ?>
+                        <tr>
+                            <td><?= $row['nama_baris'] ?></td>
+                            <td><?= $row['jml_kursi'] ?></td>
+                            <td><?= $row['khusus'] == 'Y' ? 'Ya' : 'Tidak' ?></td>
+                            <td><?= $row['nama_fakultas'] ?></td>
+                            <td style="text-align: center;">
+                                <?php
+                                if (!empty($row['id_baris'])) {
+                                    echo '
+                            <a title="Edit" class="edit btn btn-primary" data-jenis="1" data-id="' . $row['id_baris'] . '" data-nama="' . $row['nama_baris'] . '" data-jml="' . $row['jml_kursi'] . '"  data-khusus="' . $row['khusus'] . '" data-fakultas="' . $row['fakultas'] . '"> <i class="fa fa-book fa-xs" ></i> </a>
+                            <a title="Hapus" class="delete btn btn-danger" data-jenis="1" data-id="' . $row['id_baris'] . '"> <i class="fa fa-trash fa-xs"></i> </a>';
+                                }
+                                ?>
+                            </td>
+                        </tr>
+                <?php
+                    }
+                }
+                ?>
+            </tbody>
+        </table>
+    </div>
     <button class="add_baris btn btn-success"><i class="fa fa-plus"></i> Baris</button>
 
     <br>
@@ -62,42 +71,50 @@
         </tr>
     </table>
     <br>
-    <table border=1 width=100%>
-        <?php
-        $id_user = $_SESSION['id'];
-        $query = "SELECT * FROM ref_baris as j where jenis = 2 ORDER BY nama_baris asc
+    <table class="table table-bordered" width=100% id="tb_kursi_ortu" cellspacing="0">
+        <thead>
+            <tr>
+                <th>No Kursi</th>
+                <th>Jumlah Kursi</th>
+                <!-- <th>Predikat Khusus</th>
+                <th>Fakultas Jurusan</th> -->
+                <th width=100px>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            $id_user = $_SESSION['id'];
+            $query = "SELECT * FROM ref_baris as j
+                     LEFT JOIN fakultas f on j.fakultas = f.id_fakultas
+             where jenis = 2 ORDER BY 
+             length(nama_baris),
+             nama_baris asc
                        ";
-        $result = mysqli_query($linkDB, $query);
+            $result = mysqli_query($linkDB, $query);
 
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-        ?>
-                <tr>
-                    <td><?= $row['nama_baris'] ?></td>
-                    <td>
-                        <div class="row" style="margin:0px">
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+            ?>
+                    <tr>
+                        <td><?= $row['nama_baris'] ?></td>
+                        <td><?= $row['jml_kursi'] ?></td>
+                        <!-- <td><?= $row['khusus'] == 'Y' ? 'Ya' : 'Tidak' ?></td>
+                        <td><?= $row['nama_fakultas'] ?></td> -->
+                        <td style="text-align: center;">
                             <?php
-                            for ($i = 1; $i <= $row['jml_kursi']; $i++) {
-                                echo "<div class='chair'>$i</div>";
+                            if (!empty($row['id_baris'])) {
+                                echo '
+                            <a title="Edit" class="edit btn btn-primary" data-jenis="2" data-id="' . $row['id_baris'] . '" data-nama="' . $row['nama_baris'] . '" data-jml="' . $row['jml_kursi'] . '"  data-khusus="' . $row['khusus'] . '" data-fakultas="' . $row['fakultas'] . '"> <i class="fa fa-book fa-xs" ></i> </a>
+                            <a title="Hapus" class="delete btn btn-danger" data-jenis="2" data-id="' . $row['id_baris'] . '"> <i class="fa fa-trash fa-xs"></i> </a>';
                             }
                             ?>
-                        </div>
-
-                    </td>
-                    <td style="text-align: center;">
-                        <?php
-                        if (!empty($row['id_baris'])) {
-                            echo '
-                            <a title="Edit" class="edit btn btn-primary" data-jenis="2" data-id="' . $row['id_baris'] . '" data-nama="' . $row['nama_baris'] . '" data-jml="' . $row['jml_kursi'] . '"> <i class="fa fa-book fa-xs" ></i> </a>
-                            <a title="Hapus" class="delete btn btn-danger" data-jenis="2" data-id="' . $row['id_baris'] . '"> <i class="fa fa-trash fa-xs"></i> </a>';
-                        }
-                        ?>
-                    </td>
-                </tr>
-        <?php
+                        </td>
+                    </tr>
+            <?php
+                }
             }
-        }
-        ?>
+            ?>
+        </tbody>
     </table>
     <button class="add_baris_ortu btn btn-success"><i class="fa fa-plus"></i> Baris</button>
 </div>
@@ -117,9 +134,35 @@
                         <div class="col-lg-12">
                             <div class="col-form-label">Nama Baris</div>
                             <input type="hidden" id="id_baris" name="id_baris" class="form-control" />
-                            <input type="" id="jenis" name="jenis" class="form-control" />
+                            <input type="hidden" id="jenis" name="jenis" class="form-control" />
                             <input type="text" placeholder="contoh : G" onkeydown="return /[A-Z]/i.test(event.key)" id="nama_baris" name="nama_baris" class="form-control" required />
                         </div>
+                        <div id="layout_mhs">
+                            <div class="col-lg-12">
+                                <div class="col-form-label">Fakultas </div>
+                                <select class="form-control" id="fakultas" name="fakultas">
+                                    <option value="0">-</option>
+                                    <?php
+                                    $query_fakultas = "SELECT * FROM fakultas ";
+                                    $result_fakultas = mysqli_query($linkDB, $query_fakultas);
+                                    if ($result_fakultas->num_rows > 0) {
+                                        while ($fk = $result_fakultas->fetch_assoc()) {
+                                            echo "<option value='{$fk['id_fakultas']}'> {$fk['nama_fakultas']}</option>";
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <div class="col-form-label">Predikat Khusus </div>
+                                <select class="form-control" id="khusus" name="khusus">
+                                    <option value="N">Tidak</option>
+                                    <option value="Y">Ya</option>
+                                </select>
+                            </div>
+                        </div>
+
                         <div class="col-lg-12">
                             <div class="col-form-label">Jumlah Kursi</div>
                             <input type="number" step="1" min=0 max=100 name="jml_kursi" id="jml_kursi" class="form-control" required />
@@ -138,15 +181,20 @@
 <script>
     $(document).ready(function() {
 
+        $('#tb_kursi_mhs, #tb_kursi_ortu').DataTable({
+            "ordering": false
+        });
         var RefModal = {
             'self': $('#reg_modal'),
             'info': $('#reg_modal').find('.info'),
             'form': $('#reg_modal').find('#reg_form'),
             // 'addBtn': $('#reg_modal').find('#add_btn'),
-            // 'saveEditBtn': $('#reg_modal').find('#save_edit_btn'),
+            'layout_mhs': $('#reg_modal').find('#layout_mhs'),
             'id_baris': $('#reg_modal').find('#id_baris'),
             'nama_baris': $('#reg_modal').find('#nama_baris'),
             'jml_kursi': $('#reg_modal').find('#jml_kursi'),
+            'fakultas': $('#reg_modal').find('#fakultas'),
+            'khusus': $('#reg_modal').find('#khusus'),
             'jenis': $('#reg_modal').find('#jenis'),
         }
 
@@ -154,27 +202,42 @@
             RefModal.self.modal('show');
             RefModal.form.trigger('reset');
             RefModal.jenis.val(1);
+            RefModal.jenis.trigger('change')
         })
 
         $('.add_baris_ortu').on('click', function(ev) {
             RefModal.self.modal('show');
             RefModal.form.trigger('reset');
             RefModal.jenis.val(2);
+            RefModal.jenis.trigger('change')
 
         })
 
-
+        RefModal.jenis.on('change', function() {
+            console.log('cek')
+            if (RefModal.jenis.val() == 1) {
+                RefModal.layout_mhs.show();
+            } else {
+                RefModal.layout_mhs.hide();
+            }
+        })
         $('.edit').on('click', function(ev) {
             cur_id = $(this).data('id')
             nama = $(this).data('nama')
             jml = $(this).data('jml')
             jenis = $(this).data('jenis')
+            khusus = $(this).data('khusus')
+            fakultas = $(this).data('fakultas')
+            console.log(khusus)
             RefModal.self.modal('show');
             RefModal.form.trigger('reset');
             RefModal.id_baris.val(cur_id);
             RefModal.nama_baris.val(nama);
             RefModal.jml_kursi.val(jml);
             RefModal.jenis.val(jenis);
+            RefModal.khusus.val(khusus);
+            RefModal.fakultas.val(fakultas);
+            RefModal.jenis.trigger('change')
         })
 
 

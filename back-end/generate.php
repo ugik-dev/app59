@@ -7,42 +7,31 @@ $tempDir = "../qrcode/";
 
 $id = $_GET['id'];
 
-$query = "SELECT * FROM ref_baris as j where jenis = 1 ORDER BY nama_baris asc
-";
-$result = mysqli_query($linkDB, $query);
+$query_khusus = "SELECT * FROM ref_baris as j where jenis = 1 and khusus = 'Y' ORDER BY nama_baris asc ";
+$result_khusus = mysqli_query($linkDB, $query_khusus);
 
-$dataKursi = [];
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
+$dataKursiKhusus = [];
+if ($result_khusus->num_rows > 0) {
+    while ($row = $result_khusus->fetch_assoc()) {
         for ($i = 1; $i <= $row['jml_kursi']; $i++) {
-            $dataKursi[] = $row['nama_baris'] . '-' . str_pad($i, 3, '0', STR_PAD_LEFT);
+            $dataKursiKhusus[] = $row['nama_baris'] . '-' . str_pad($i, 3, '0', STR_PAD_LEFT);
         }
     }
 }
 
-$queryO = "SELECT * FROM ref_baris as j where jenis = 2 ORDER BY nama_baris asc
+
+$query_ortu = "SELECT * FROM ref_baris as j where jenis = 2 ORDER BY nama_baris asc
 ";
-$resultO = mysqli_query($linkDB, $queryO);
+$result_ortu = mysqli_query($linkDB, $query_ortu);
 
 $dataKursiOrtu = [];
-if ($resultO->num_rows > 0) {
-    while ($rowO = $resultO->fetch_assoc()) {
+if ($result_ortu->num_rows > 0) {
+    while ($rowO = $result_ortu->fetch_assoc()) {
         for ($i = 1; $i <= $rowO['jml_kursi']; $i++) {
             $dataKursiOrtu[] = $rowO['nama_baris'] . '-' . str_pad($i, 3, '0', STR_PAD_LEFT);
         }
     }
 }
-
-
-// echo json_encode($dataKursiOrtu);
-// die();
-// foreach ($dataKursi as $k) {
-//     // echo json_encode($k);
-//     for ($i = 1; $i <= $k['jml_kursi']; $i++) {
-//         echo $k['nama_baris'] . str_pad($i, 2, '0', STR_PAD_LEFT);
-//     }
-//     die();
-// }
 
 
 $dataPeserta = [];
@@ -54,8 +43,7 @@ JOIN ref_predikat rp on rp.id_ref_predikat = rg.predikat
 JOIN fakultas_jurusan fj on fj.id_fakultas_jurusan = rg.fakultas_jurusan 
 WHERE id_jadwal = $id AND predikat in (1,2)
 ORDER BY rank_posisi ASC , no_urut";
-// echo $query2;
-// die();
+
 $result2 = mysqli_query($linkDB, $query2);
 
 function cek_next($a, $b, $dataKursi)
@@ -82,23 +70,14 @@ function cek_next($a, $b, $dataKursi)
 
 if ($result2->num_rows > 0) {
     while ($row2 = $result2->fetch_assoc()) {
-
-
         $j = cek_next($j, $j + 1, $dataKursiOrtu);
-        // echo $j == true;
-        // echo "s";
         // die();
-        // if ($j == true) {
-        //     return;
-        // }
-        // } else {
-        // }
-        if (empty($dataKursiOrtu[$j]) or empty($dataKursiOrtu[$j + 1]) or empty($dataKursi[$i])) {
+        if (empty($dataKursiOrtu[$j]) or empty($dataKursiOrtu[$j + 1]) or empty($dataKursiKhusus[$i])) {
             echo json_encode(['error' => true, 'message' => "Jumlah Kursi Kurang!!"]);
             return;
         }
 
-        $codeContents = $row2['id_reg_jadwal'] . $dataKursi[$i] . time();
+        $codeContents = $row2['id_reg_jadwal'] . $dataKursiKhusus[$i] . time();
         $fileName = $row2['id_reg_jadwal']  . '.png';
         $pngAbsoluteFilePath = $tempDir . $fileName;
         if (file_exists($pngAbsoluteFilePath))
@@ -112,71 +91,87 @@ if ($result2->num_rows > 0) {
             unlink($pngAbsoluteFilePath2);
         QRcode::png($codeContents2, $pngAbsoluteFilePath2);
         $sql_update = "UPDATE reg_jadwal SET  status_reg = '2', status_ortu = '2', 
-        nomor_kursi = '{$dataKursi[$i]}', qrcode= '{$codeContents}',
+        nomor_kursi = '{$dataKursiKhusus[$i]}', qrcode= '{$codeContents}',
         nomor_kursi_ortu = '{$dataKursiOrtu[$j]},{$dataKursiOrtu[$j + 1]}', qrcode_ortu= '{$codeContents2}' 
-
         WHERE  id_reg_jadwal = {$row2['id_reg_jadwal']}";
         mysqli_query($linkDB, $sql_update);
-
         $i++;
         $j = $j + 2;
     }
 }
 // die();
 // GENERATE NON SPESIAL
-$query2 = "SELECT * FROM reg_jadwal rg 
-JOIN ref_predikat rp on rp.id_ref_predikat = rg.predikat 
-JOIN fakultas_jurusan fj on fj.id_fakultas_jurusan = rg.fakultas_jurusan 
-WHERE id_jadwal = $id AND predikat NOT in (1,2)
-ORDER BY  no_urut";
-// echo $query2;
-// die();
-$result2 = mysqli_query($linkDB, $query2);
-if ($result2->num_rows > 0) {
-    while ($row2 = $result2->fetch_assoc()) {
-        $j = cek_next($j, $j + 1, $dataKursiOrtu);
-        if (!$j) {
-            return;
-        }
-        if (empty($dataKursiOrtu[$j]) or empty($dataKursiOrtu[$j + 1]) or empty($dataKursi[$i])) {
-            echo json_encode(['error' => true, 'message' => "Jumlah Kursi Kurang!!"]);
-            return;
-        }
-        $codeContents = $row2['id_reg_jadwal'] . $dataKursi[$i] . time();
-        $fileName = $row2['id_reg_jadwal']  . '.png';
-        $pngAbsoluteFilePath = $tempDir . $fileName;
-        if (file_exists($pngAbsoluteFilePath))
-            unlink($pngAbsoluteFilePath);
-        QRcode::png($codeContents, $pngAbsoluteFilePath);
-
-        $codeContents2 = $codeContents . '_ortu';
-        $fileName2 = $row2['id_reg_jadwal']  . '_ortu.png';
-        $pngAbsoluteFilePath2 = $tempDir . $fileName2;
-        if (file_exists($pngAbsoluteFilePath2))
-            unlink($pngAbsoluteFilePath2);
-        QRcode::png($codeContents2, $pngAbsoluteFilePath2);
-
-
-        $sql_update = "UPDATE reg_jadwal SET  status_reg = '2', status_ortu = '2',
-        nomor_kursi = '{$dataKursi[$i]}', qrcode= '{$codeContents}',
-        nomor_kursi_ortu = '{$dataKursiOrtu[$j]},{$dataKursiOrtu[$j + 1]}', qrcode_ortu= '{$codeContents2}' 
-
-        WHERE  id_reg_jadwal = {$row2['id_reg_jadwal']}";
-        // if ($row2['id_reg_jadwal'] == 35) {
-        //     echo $sql_update;
-        //     die();
-        // }
-        mysqli_query($linkDB, $sql_update);
-        // echo $sql_update;
+$query_jurusan = "SELECT * FROM fakultas as j 
+                       ";
+$result_jurusan = mysqli_query($linkDB, $query_jurusan);
+if ($result_jurusan->num_rows > 0) {
+    while ($row_jurusan = $result_jurusan->fetch_assoc()) {
+        // echo json_encode($dataKursiKhusus);
+        // echo json_encode($row_jurusan);
         // die();
+        $query_mhs = "SELECT * FROM ref_baris as j 
+        where jenis = 1 and khusus = 'N' and fakultas = '{$row_jurusan['id_fakultas']}' 
+        ORDER BY nama_baris asc ";
+        $result_mhs = mysqli_query($linkDB, $query_mhs);
 
-        $i++;
-        $j = $j + 2;
+        $dataKursiMhs = [];
+        if ($result_mhs->num_rows > 0) {
+            while ($row = $result_mhs->fetch_assoc()) {
+
+                for ($i = 1; $i <= $row['jml_kursi']; $i++) {
+                    $dataKursiMhs[] = $row['nama_baris'] . '-' . str_pad($i, 3, '0', STR_PAD_LEFT);
+                }
+            }
+        }
+
+        $query2 = "SELECT * FROM reg_jadwal rg 
+            JOIN ref_predikat rp on rp.id_ref_predikat = rg.predikat 
+            JOIN fakultas_jurusan fj on fj.id_fakultas_jurusan = rg.fakultas_jurusan 
+            WHERE id_jadwal = $id AND predikat NOT in (1,2) AND fj.fakultas = '{$row_jurusan['id_fakultas']}' 
+            ORDER BY  no_urut";
+
+        $result_perjurusan = mysqli_query($linkDB, $query2);
+        $k = 0;
+        if ($result_perjurusan->num_rows > 0) {
+            while ($row_perjurusan = $result_perjurusan->fetch_assoc()) {
+                $j = cek_next($j, $j + 1, $dataKursiOrtu);
+                // if (!$j) {
+                //     return;
+                // }
+                // echo json_encode($dataKursiMhs);
+                if (empty($dataKursiOrtu[$j]) or empty($dataKursiOrtu[$j + 1]) or empty($dataKursiMhs[$k])) {
+                    echo json_encode(['error' => true, 'message' => "Jumlah Kursi Kurang!!"]);
+                    return;
+                }
+                $codeContents = $row_perjurusan['id_reg_jadwal'] . $dataKursiMhs[$k] . time();
+                $fileName = $row_perjurusan['id_reg_jadwal']  . '.png';
+                $pngAbsoluteFilePath = $tempDir . $fileName;
+                if (file_exists($pngAbsoluteFilePath))
+                    unlink($pngAbsoluteFilePath);
+                QRcode::png($codeContents, $pngAbsoluteFilePath);
+
+                $codeContents2 = $codeContents . '_ortu';
+                $fileName2 = $row_perjurusan['id_reg_jadwal']  . '_ortu.png';
+                $pngAbsoluteFilePath2 = $tempDir . $fileName2;
+                if (file_exists($pngAbsoluteFilePath2))
+                    unlink($pngAbsoluteFilePath2);
+                QRcode::png($codeContents2, $pngAbsoluteFilePath2);
+                $sql_update = "UPDATE reg_jadwal SET  status_reg = '2', status_ortu = '2',
+        nomor_kursi = '{$dataKursiMhs[$k]}', qrcode= '{$codeContents}',
+        nomor_kursi_ortu = '{$dataKursiOrtu[$j]},{$dataKursiOrtu[$j + 1]}', qrcode_ortu= '{$codeContents2}' 
+        WHERE  id_reg_jadwal = {$row_perjurusan['id_reg_jadwal']}";
+                mysqli_query($linkDB, $sql_update);
+                $k++;
+                $j = $j + 2;
+            }
+        }
     }
 }
+// die();
+
 $sql_update = "UPDATE jadwal SET status = 2 WHERE  id_jadwal = {$id}";
 mysqli_query($linkDB, $sql_update);
 
 
 
-echo json_encode($dataPeserta);
+echo json_encode('');

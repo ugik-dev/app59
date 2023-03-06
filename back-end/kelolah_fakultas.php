@@ -6,13 +6,12 @@ $data = $_POST;
 
 $id_user = $_SESSION['id'];
 
-if (empty($data['id_fakultas_jurusan'])) {
-    $sql = "INSERT INTO fakultas_jurusan (nama_fakultas, nama_jurusan, strata, no_urut)
-VALUES ( '{$data['nama_fakultas']}','{$data['nama_jurusan']}','{$data['strata']}','{$data['no_urut']}')";
+if (empty($data['id_fakultas'])) {
+    $sql = "INSERT INTO fakultas (nama_fakultas)
+VALUES ( '{$data['nama_fakultas']}')";
 } else {
-    $sql = "UPDATE fakultas_jurusan SET nama_fakultas = '{$data['nama_fakultas']}' , nama_jurusan = '{$data['nama_jurusan']}',
-    strata = '{$data['strata']}',no_urut = '{$data['no_urut']}'
-     WHERE  id_fakultas_jurusan = {$data['id_fakultas_jurusan']}";
+    $sql = "UPDATE fakultas SET nama_fakultas = '{$data['nama_fakultas']}' 
+     WHERE  id_fakultas = {$data['id_fakultas']}";
 }
 
 include('response.php');
