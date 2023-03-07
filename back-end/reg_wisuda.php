@@ -43,11 +43,10 @@ $result = mysqli_query($linkDB, $sql);
 
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
-        // echo json_encode($row);
         $data['predikat'] = $row['id_ref_predikat'];
     }
 } else {
-    $data['predikat'] = NULL;
+    $data['predikat'] = 6;
 }
 
 

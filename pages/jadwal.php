@@ -141,7 +141,7 @@
 
                                 if ($result_select->num_rows > 0) {
                                     while ($row_select = $result_select->fetch_assoc()) {
-                                        echo "<option value='{$row_select['id_fakultas_jurusan']}'>{$row_select['nama_fakultas']} - {$row_select['nama_jurusan']} - {$row_select['strata']}<option>";
+                                        echo "<option value='{$row_select['id_fakultas_jurusan']}'>{$row_select['nama_fakultas']} - {$row_select['nama_jurusan']} - {$row_select['strata']}</option>";
                                     }
                                 }
                                 ?>
