@@ -117,7 +117,6 @@ if ($result_jurusan->num_rows > 0) {
         $dataKursiMhs = [];
         if ($result_mhs->num_rows > 0) {
             while ($row = $result_mhs->fetch_assoc()) {
-
                 for ($i = 1; $i <= $row['jml_kursi']; $i++) {
                     $dataKursiMhs[] = $row['nama_baris'] . '-' . str_pad($i, 3, '0', STR_PAD_LEFT);
                 }
@@ -127,13 +126,39 @@ if ($result_jurusan->num_rows > 0) {
         $query2 = "SELECT * FROM reg_jadwal rg 
             JOIN ref_predikat rp on rp.id_ref_predikat = rg.predikat 
             JOIN fakultas_jurusan fj on fj.id_fakultas_jurusan = rg.fakultas_jurusan 
+            JOIN fakultas f on f.id_fakultas = fj.fakultas 
             WHERE id_jadwal = $id AND predikat NOT in (1,2) AND fj.fakultas = '{$row_jurusan['id_fakultas']}' 
             ORDER BY  no_urut";
 
         $result_perjurusan = mysqli_query($linkDB, $query2);
         $k = 0;
+        $last_baris = explode('-', $dataKursiMhs[$k])[0];
         if ($result_perjurusan->num_rows > 0) {
             while ($row_perjurusan = $result_perjurusan->fetch_assoc()) {
+                if (empty($dataKursiMhs[$k])) {
+                    echo json_encode(['error' => true, 'message' => "Kursi kurang untuk " . $row_perjurusan['nama_fakultas'] . '-' . $row_perjurusan['nama_jurusan'] . '-' . $row_perjurusan['strata']]);
+                    return;
+                }
+                if ($k == 0) {
+                    $cur_strata = $row_perjurusan['strata'];
+                } else {
+                    if ($row_perjurusan['strata'] != $cur_strata) {
+
+                        while ($last_baris == explode('-', $dataKursiMhs[$k])[0]) {
+                            if (empty($dataKursiMhs[$k + 1])) {
+                                echo json_encode(['error' => true, 'message' => "Kursi kurang untuk " . $row_perjurusan['nama_fakultas'] . '-' . $row_perjurusan['nama_jurusan'] . '-' . $row_perjurusan['strata']]);
+                                return;
+                            }
+                            $k++;
+                        }
+                        $last_baris = explode('-', $dataKursiMhs[$k])[0];
+                    }
+                    // die();
+                }
+                $cur_strata = $row_perjurusan['strata'];
+
+                // echo json_encode($row_perjurusan['strata']);
+                // die();
                 $j = cek_next($j, $j + 1, $dataKursiOrtu);
                 // if (!$j) {
                 //     return;
@@ -157,13 +182,15 @@ if ($result_jurusan->num_rows > 0) {
                     unlink($pngAbsoluteFilePath2);
                 QRcode::png($codeContents2, $pngAbsoluteFilePath2);
                 $sql_update = "UPDATE reg_jadwal SET  status_reg = '2', status_ortu = '2',
-        nomor_kursi = '{$dataKursiMhs[$k]}', qrcode= '{$codeContents}',
-        nomor_kursi_ortu = '{$dataKursiOrtu[$j]},{$dataKursiOrtu[$j + 1]}', qrcode_ortu= '{$codeContents2}' 
-        WHERE  id_reg_jadwal = {$row_perjurusan['id_reg_jadwal']}";
+                nomor_kursi = '{$dataKursiMhs[$k]}', qrcode= '{$codeContents}',
+                nomor_kursi_ortu = '{$dataKursiOrtu[$j]},{$dataKursiOrtu[$j + 1]}', qrcode_ortu= '{$codeContents2}' 
+                WHERE  id_reg_jadwal = {$row_perjurusan['id_reg_jadwal']}";
                 mysqli_query($linkDB, $sql_update);
                 $k++;
                 $j = $j + 2;
             }
+
+            // die();
         }
     }
 }

@@ -52,7 +52,7 @@
                 <div class="row" style="margin:0px ;align-items: center; text-align: center">
                     <?php
                     foreach ($r as $key2 => $p) {
-                        echo "<div class='chair border_green " . ($p['status_reg'] == '3' ? 'check_in' : 'not_check_in') . "' data-id='" . $p['nomor_kursi'] . "'>" . $p['fakultas'] . '|' . $p['id_fakultas_jurusan'] . '<br>' . $p['nomor_kursi'] . "</div>";
+                        echo "<div class='chair border_green " . ($p['status_reg'] == '3' ? 'check_in' : 'not_check_in') . "' data-id='" . $p['nomor_kursi'] . "'>" . $p['fakultas'] . '|' . $p['id_fakultas_jurusan'] . '<br>' . $p['strata']  . '<br>' . $p['nomor_kursi'] . "</div>";
                     }
                     ?>
                 </div>
