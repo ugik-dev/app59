@@ -12,7 +12,6 @@ if ($_GET['page'] == 'scanner') {
     $page = "pages_admin/{$_GET['page']}.php";
     include('template/footer.php');
 } else {
-    $data['title'] = 'Ini Title';
     $page = "pages_admin/{$_GET['page']}.php";
     include('template/index.php');
 }
