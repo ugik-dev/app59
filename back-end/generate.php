@@ -6,10 +6,11 @@ $tempDir = "../qrcode/";
 
 
 $id = $_GET['id'];
-
+// mengambil parameter khusus yaitu yang khusus = 1 dan
 $query_khusus = "SELECT * FROM ref_baris as j where jenis = 1 and khusus = 'Y' ORDER BY nama_baris asc ";
 $result_khusus = mysqli_query($linkDB, $query_khusus);
 
+// disusun kursi  tapi masih kosong belum ada mhs
 $dataKursiKhusus = [];
 if ($result_khusus->num_rows > 0) {
     while ($row = $result_khusus->fetch_assoc()) {
@@ -19,6 +20,7 @@ if ($result_khusus->num_rows > 0) {
     }
 }
 
+// disusun kursi  tapi masih kosong belum ada ortu
 
 $query_ortu = "SELECT * FROM ref_baris as j where jenis = 2 ORDER BY nama_baris asc
 ";
@@ -37,7 +39,7 @@ if ($result_ortu->num_rows > 0) {
 $dataPeserta = [];
 $i = 0;
 $j = 0;
-
+// mengambil data register yang mendaftar pada jadwal tsb
 $query2 = "SELECT * FROM reg_jadwal rg 
 JOIN ref_predikat rp on rp.id_ref_predikat = rg.predikat 
 JOIN fakultas_jurusan fj on fj.id_fakultas_jurusan = rg.fakultas_jurusan 
@@ -54,6 +56,7 @@ function cek_next($a, $b, $dataKursi)
         // return 'error';
         die();
     }
+
     for ($x = $a + 1; $x <= $b; $x++) {
         if (empty($dataKursi[$x])) {
             echo json_encode(['error' => true, 'message' => "Jumlah Kursi Wali Mahasiswa Kurang!!"]);
@@ -68,6 +71,9 @@ function cek_next($a, $b, $dataKursi)
     return $a;
 }
 
+// echo json_encode($dataKursiOrtu);
+// // echo json_encode($dataKursiKhusus);
+// die();
 if ($result2->num_rows > 0) {
     while ($row2 = $result2->fetch_assoc()) {
         $j = cek_next($j, $j + 1, $dataKursiOrtu);
@@ -76,10 +82,12 @@ if ($result2->num_rows > 0) {
             echo json_encode(['error' => true, 'message' => "Jumlah Kursi Kurang!!"]);
             return;
         }
-
+        // start qrcode
         $codeContents = $row2['id_reg_jadwal'] . $dataKursiKhusus[$i] . time();
         $fileName = $row2['id_reg_jadwal']  . '.png';
         $pngAbsoluteFilePath = $tempDir . $fileName;
+        // echo $pngAbsoluteFilePath;
+        // die();
         if (file_exists($pngAbsoluteFilePath))
             unlink($pngAbsoluteFilePath);
         QRcode::png($codeContents, $pngAbsoluteFilePath);
@@ -90,6 +98,8 @@ if ($result2->num_rows > 0) {
         if (file_exists($pngAbsoluteFilePath2))
             unlink($pngAbsoluteFilePath2);
         QRcode::png($codeContents2, $pngAbsoluteFilePath2);
+
+        // end qrcode
         $sql_update = "UPDATE reg_jadwal SET  status_reg = '2', status_ortu = '2', 
         nomor_kursi = '{$dataKursiKhusus[$i]}', qrcode= '{$codeContents}',
         nomor_kursi_ortu = '{$dataKursiOrtu[$j]},{$dataKursiOrtu[$j + 1]}', qrcode_ortu= '{$codeContents2}' 
@@ -109,6 +119,7 @@ if ($result_jurusan->num_rows > 0) {
         // echo json_encode($dataKursiKhusus);
         // echo json_encode($row_jurusan);
         // die();
+        // kursi untuk jurusan 
         $query_mhs = "SELECT * FROM ref_baris as j 
         where jenis = 1 and khusus = 'N' and fakultas = '{$row_jurusan['id_fakultas']}' 
         ORDER BY nama_baris asc ";
@@ -139,11 +150,12 @@ if ($result_jurusan->num_rows > 0) {
                     echo json_encode(['error' => true, 'message' => "Kursi kurang untuk " . $row_perjurusan['nama_fakultas'] . '-' . $row_perjurusan['nama_jurusan'] . '-' . $row_perjurusan['strata']]);
                     return;
                 }
+
                 if ($k == 0) {
                     $cur_strata = $row_perjurusan['strata'];
                 } else {
                     if ($row_perjurusan['strata'] != $cur_strata) {
-
+                        // ini untuk cek apakah strata sama jika strata tidak sama maka kursi ajan maju 
                         while ($last_baris == explode('-', $dataKursiMhs[$k])[0]) {
                             if (empty($dataKursiMhs[$k + 1])) {
                                 echo json_encode(['error' => true, 'message' => "Kursi kurang untuk " . $row_perjurusan['nama_fakultas'] . '-' . $row_perjurusan['nama_jurusan'] . '-' . $row_perjurusan['strata']]);
@@ -168,6 +180,7 @@ if ($result_jurusan->num_rows > 0) {
                     echo json_encode(['error' => true, 'message' => "Jumlah Kursi Kurang!!"]);
                     return;
                 }
+
                 $codeContents = $row_perjurusan['id_reg_jadwal'] . $dataKursiMhs[$k] . time();
                 $fileName = $row_perjurusan['id_reg_jadwal']  . '.png';
                 $pngAbsoluteFilePath = $tempDir . $fileName;
@@ -181,6 +194,7 @@ if ($result_jurusan->num_rows > 0) {
                 if (file_exists($pngAbsoluteFilePath2))
                     unlink($pngAbsoluteFilePath2);
                 QRcode::png($codeContents2, $pngAbsoluteFilePath2);
+
                 $sql_update = "UPDATE reg_jadwal SET  status_reg = '2', status_ortu = '2',
                 nomor_kursi = '{$dataKursiMhs[$k]}', qrcode= '{$codeContents}',
                 nomor_kursi_ortu = '{$dataKursiOrtu[$j]},{$dataKursiOrtu[$j + 1]}', qrcode_ortu= '{$codeContents2}' 

@@ -171,13 +171,11 @@
             'self': $('#reg_modal'),
             'info': $('#reg_modal').find('.info'),
             'form': $('#reg_modal').find('#reg_form'),
-            // 'addBtn': $('#reg_modal').find('#add_btn'),
-            // 'saveEditBtn': $('#reg_modal').find('#save_edit_btn'),
             'id_jadwal': $('#reg_modal').find('#id_jadwal'),
         }
+
         $('.daftar').on('click', function(ev) {
             cur_id = $(this).data('id')
-
             RefModal.self.modal('show');
             RefModal.id_jadwal.val(cur_id);
         })

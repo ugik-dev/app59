@@ -7,7 +7,9 @@
         <div class="sidebar-brand-text mx-3">Graduation Registration </div>
     </a>
     <hr class="sidebar-divider my-0" />
-    <?php include('menu_' . $_SESSION['level'] . '.php') ?>
+    <?php
+    include('menu_' . $_SESSION['level'] . '.php')
+    ?>
     <li class="nav-item">
         <a class="nav-link" href="logout.php">
             <i class="fas  fa-sign-out-alt fa-fw "></i>
